@@ -1,0 +1,202 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="row">
+  {% if not promo %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Choisissez une promotion</h4>
+                <p class="card-category">Sélectionnez une Promotion pour la Gestion des Séances</p>
+            </div>
+            <div class="card-body">
+                <form action="{% url 'seances_manage' %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                      <label for="filiereSelect" class="form-label">Filière</label>
+                      <select class="form-control" id="filiereSelect" aria-label="Select Filière">
+                        <option selected required>Choisir une filière</option>
+                        <!-- Dynamic filiere options -->
+                      </select>
+                    </div>
+                                          
+                    <div class="mb-3">
+                      <label for="promoSelect" class="form-label">Promotion</label>
+                      <select class="form-control" id="promoSelect" aria-label="Select Promotion" name="promo_id">
+                        <option selected required>Choisir une promotion</option>
+                        <!-- Dynamic promotion options -->
+                      </select>
+                    </div>
+                                          
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+      $(document).ready(function() {
+        // Populate filiere select options
+        var classes = {{ classes | safe }};
+        var filiereSelect = $('#filiereSelect');
+      
+        for (var i = 0; i < classes.length; i++) {
+          var filiere = classes[i].filiere;
+          var option = $('<option></option>').text(filiere.Nom).attr('value', filiere.ID);
+          filiereSelect.append(option);
+        }
+      
+        // Handle filiere select change event
+        filiereSelect.on('change', function() {
+          var selectedFiliereID = $(this).val();
+          var promoSelect = $('#promoSelect');
+      
+          // Clear previous promotion options
+          promoSelect.empty();
+      
+          // Find the selected filiere object
+          var selectedFiliere = classes.find(function(classItem) {
+            return classItem.filiere.ID === selectedFiliereID;
+          });
+      
+          // Populate promotion select options
+          if (selectedFiliere) {
+            var promotions = selectedFiliere.promotions;
+      
+            for (var j = 0; j < promotions.length; j++) {
+              var promotion = promotions[j];
+              var option = $('<option></option>').text(promotion.Niveau).attr('value', promotion.ID);
+              promoSelect.append(option);
+            }
+          }
+        });
+      });
+      </script>
+  {% endif %}
+  {% if promo %}
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header ">
+          <a href="{% url 'seances_manage' %}" class="float-right">Retour</a>
+          <h4 class="card-title">{{ promo }}</h4>
+          <p class="card-category">{{ promo.Filiere }}</p>
+        </div>
+        <div class="card-body">
+          <form id="form_template" method="POST">
+            {% csrf_token %}
+            <div class="row">
+              {% for day in days %}
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <div class="text-sm text-dark fw-bold ubuntu border border-dark p-2 px-3 rounded mb-2" data-toggle="collapse" data-target="#collapse-{{ day|slugify }}" aria-expanded="false" aria-controls="collapse-{{ day|slugify }}">
+                      {{ day }}
+                      <span class="float-right">&#9660;</span>
+                    </div>
+                    <div class="collapse" id="collapse-{{ day|slugify }}">
+                      <div class="row">
+                        {% for session in sessions %}
+                          <div class="col-md-6">
+                            <span class="float-right m-1 text-danger text-sm px-1 rounded border border-danger"  onclick="resetSession('{{ day }}', '{{ session.ID }}')" >
+                            Vider
+                            </span>
+                            <label class="form-label">{{ session.Heure }}</label>
+                            <select class="form-control mb-1" name="module_{{ day }}_{{ session.ID }}">
+                              <option value="" selected disabled>Module</option>
+                              {% for module in modules %}
+                                <option value="{{ module.ID }}">{{ module.Nom }}</option>
+                              {% endfor %}
+                            </select>
+                            <select class="form-control mb-1" name="enseignant_{{ day }}_{{ session.ID }}">
+                              <option value="" selected disabled>Enseignant</option>
+                              {% for enseignant in enseignants %}
+                                <option value="{{ enseignant.ID }}">{{ enseignant.Nom }} {{ enseignant.Prenom }}</option>
+                              {% endfor %}
+                            </select>
+                            <select class="form-control" name="type_{{ day }}_{{ session.ID }}">
+                              <option value="" selected disabled>Type</option>
+                              {% for type in Types %}
+                                <option value="{{ type }}">{{ type }}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% if promo %}
+<script>
+  function submitForm() {
+    $.ajax({
+      url: '',
+      type: 'POST',
+      data: $('#form_template').serialize(),
+      success: function(response) {
+        if (response.success) {
+          // Generate success notification
+          $.notify(response.message, 'success');
+        } else {
+          // Generate error notification with detailed error messages
+          var errorMessages = response.errors.join('<br>');
+          var errorMessage = response.message + ':<br>' + errorMessages;
+          $.notify(errorMessage, 'error');
+
+          // Extract day and session IDs from error messages
+          var errorFields = [];
+          response.errors.forEach(function(error) {
+            var sessionID = error.split(" pour la séance ")[1];
+            var day = sessionID.split("_")[0];
+            var sessionOrder = sessionID.split("_")[1];
+            errorFields.push({ day: day, sessionOrder: sessionOrder });
+          });
+
+          // Mark fields with missing input as having an error
+          errorFields.forEach(function(field) {
+            var daySlug = field.day.toLowerCase();
+            var sessionID = field.day + "_" + field.sessionOrder;
+            var moduleSelect = $(`#collapse-${daySlug} select[name="module_${sessionID}"]`);
+            var typeSelect = $(`#collapse-${daySlug} select[name="type_${sessionID}"]`);
+            moduleSelect.addClass("is-invalid");
+            typeSelect.addClass("is-invalid");
+          });
+        }
+      },
+      error: function() {
+        // Handle error in making the AJAX request
+        $.notify(
+          "Une erreur s'est produite lors de la soumission du formulaire.",
+          "error"
+        );
+      },
+    });
+  }
+
+  function resetSession(day, sessionID) {
+    var daySlug = day.toLowerCase();
+    var moduleSelect = $(`#collapse-${daySlug} select[name="module_${day}_${sessionID}"]`);
+    var enseignantSelect = $(`#collapse-${daySlug} select[name="enseignant_${day}_${sessionID}"]`);
+    var typeSelect = $(`#collapse-${daySlug} select[name="type_${day}_${sessionID}"]`);
+    moduleSelect.val('');
+    enseignantSelect.val(''); // Added this line to reset the "Enseignant" field
+    typeSelect.val('');
+  }
+
+  // Reset error classes on form submit
+  $("#form_template").submit(function(event) {
+    event.preventDefault();
+    $(".form-control").removeClass("is-invalid");
+    submitForm(); // Call the submitForm function to initiate the AJAX request
+  });
+</script>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header ">
+                    <h4 class="card-title">Séances du jour</h4>
+                    <p class="card-category">Liste des séances programmées pour aujourd'hui</p>
+                </div>
+                {% if seances  %}
+                    <div class="card-body table-full-width table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <th>ID</th>
+                                <th>Module</th>
+                                <th>Enseignant</th>
+                                <th>Heure</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody>
+                                {% for seance in seances %}
+                                    <tr>
+                                        <td>{{ seance.id }}</td>
+                                        <td>{{ seance.Module }}</td>
+                                        <td>{{ seance.Enseignant }}</td>
+                                        <td>{{ seance.Ordre }}</td>
+                                        <td>
+                                            <a href="#" class="btn btn-primary btn-sm mx-1">Modifier</a>
+                                            <a href="#" class="btn btn-danger btn-sm mx-1">Supprimer</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="card-body">
+                        <p class="card-text">Aucune séance n'a été programmée pour aujourd'hui.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+{% endblock %}

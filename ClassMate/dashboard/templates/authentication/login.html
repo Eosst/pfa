@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassMate - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700;800;900&display=swap');
+html,
+body {
+  height: 100%;
+  font-family: Maven Pro, sans-serif;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  max-width: 450px;
+  padding: 15px;
+}
+
+</style>
+<body class="bg-dark text-light text-center">
+<main class="form-signin w-100 m-auto">
+  <form method="post">
+    <img class="mb-4 responsive" src="{% static 'imgs/logo_white.png' %}" alt="" width="250">
+    <div calss="mb-3">
+        <h1 class="h4 mb-1 fw-light">Connexion</h1>
+        <p class="mb-3 fw-light">Connectez-vous à votre compte</p>
+        <hr>
+        <!-- Alert message -->
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.tags == 'success' %}
+        <div class="alert alert-success rounded-0">
+          <i class="bi bi-check-circle-fill"></i> {{ message }}
+        </div>
+        {% else %}
+        <div class="alert alert-danger rounded-0">
+          <i class="bi bi-exclamation-triangle-fill"></i> {{ message }}
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="form-floating text-dark rounded-0 mb-2">
+      <input type="text" class="form-control rounded-0" id="floatingInput" name="username" placeholder="Nom d'utilisateur">
+      <label for="floatingInput">Nom d'utilisateur</label>
+    </div>
+    <div class="form-floating text-dark rounded-0">
+      <input type="password" class="form-control rounded-0" id="floatingPassword" name="password" placeholder="Mot de passe">
+      <label for="floatingPassword">Mot de passe</label>
+    </div>
+    {% csrf_token %}
+    <div class="checkbox my-3 fw-light d-flex justify-content-between">
+         <span>Se souvenir de moi</span> <input type="checkbox" value="remember-me">
+    </div>
+    <button class="w-100 btn btn-lg btn-outline-light rounded-0" type="submit">S'identifier</button>
+    <p class="mt-5 mb-3 text-muted">Tous les droits sont réservés 2023 ©</p>
+  </form>
+</main>
+    
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.min.js"></script>
+</body>
+</html>

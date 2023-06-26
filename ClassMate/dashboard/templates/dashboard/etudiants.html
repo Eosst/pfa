@@ -1,0 +1,74 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Choisissez une promotion</h4>
+                <p class="card-category">Sélectionnez une Promotion pour la Gestion des Etudiants</p>
+            </div>
+            <div class="card-body">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                      <label for="filiereSelect" class="form-label">Filière</label>
+                      <select class="form-control" id="filiereSelect" aria-label="Select Filière">
+                        <option selected required>Choisir une filière</option>
+                        <!-- Dynamic filiere options -->
+                      </select>
+                    </div>
+                                          
+                    <div class="mb-3">
+                      <label for="promoSelect" class="form-label">Promotion</label>
+                      <select class="form-control" id="promoSelect" aria-label="Select Promotion" name="promo_id">
+                        <option selected required>Choisir une promotion</option>
+                        <!-- Dynamic promotion options -->
+                      </select>
+                    </div>
+                                          
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+      // Populate filiere select options
+      var classes = {{ classes | safe }};
+      var filiereSelect = $('#filiereSelect');
+    
+      for (var i = 0; i < classes.length; i++) {
+        var filiere = classes[i].filiere;
+        var option = $('<option></option>').text(filiere.Nom).attr('value', filiere.ID);
+        filiereSelect.append(option);
+      }
+    
+      // Handle filiere select change event
+      filiereSelect.on('change', function() {
+        var selectedFiliereID = $(this).val();
+        var promoSelect = $('#promoSelect');
+    
+        // Clear previous promotion options
+        promoSelect.empty();
+    
+        // Find the selected filiere object
+        var selectedFiliere = classes.find(function(classItem) {
+          return classItem.filiere.ID === selectedFiliereID;
+        });
+    
+        // Populate promotion select options
+        if (selectedFiliere) {
+          var promotions = selectedFiliere.promotions;
+    
+          for (var j = 0; j < promotions.length; j++) {
+            var promotion = promotions[j];
+            var option = $('<option></option>').text(promotion.Niveau).attr('value', promotion.ID);
+            promoSelect.append(option);
+          }
+        }
+      });
+    });
+    </script>
+{% endblock %}

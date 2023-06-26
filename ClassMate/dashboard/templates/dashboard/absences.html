@@ -1,0 +1,61 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card bg-white border rounded">
+                <div class="card-header ">
+                    <h4 class="card-title">Absences</h4>
+                    <p class="card-category">Gérer les absences des étudiants</p>
+                </div>
+
+                {% if absences  %}
+                    <div class="card-body table-full-width table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Séance</th>
+                                <th>Module</th>
+                                <th>Justifié</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody>
+                                {% for absence in absences %}
+                                    <tr>
+                                        <td>{{ absence.ID }}</td>
+                                        <td>{{ absence.Etudiant.Nom }}</td>
+                                        <td>{{ absence.Etudiant.Prenom }}</td>
+                                        <td>{{ absence.Seance.Ordre }}</td>
+                                        <td>{{ absence.Seance.Module }}</td>
+                                        {% if absence.Justification %}
+                                            {% if absence.Justification.Justifiee %}
+                                                <td><span class="badge badge-success">Justifiee</span></td>
+                                                {% else %}
+                                                <td><span class="badge badge-danger">Non Justifiee</span></td>
+                                            {% endif %}
+                                        {% else %}
+                                        <td><span class="badge badge-danger">Non Justifiee</span></td>
+                                        {% endif %}
+                                        <td>
+                                            <a href="#" class="btn btn-primary btn-sm mx-1">Modifier</a>
+                                            <a href="#" class="btn btn-danger btn-sm mx-1">Supprimer</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+        
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="card-body">
+                        <p class="card-text">Aucune absence n'a été enregistrée.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+{% endblock %}

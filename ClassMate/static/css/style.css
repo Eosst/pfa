@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700;800;900&display=swap');
+html,
+body {
+  font-family: Maven Pro, sans-serif;
+}
+.icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    background-color: #00000036;
+    font-size: 50px;
+    color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+.icon-container:hover {
+    background-color: #000000a6;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    border: 1px solid #fff;
+    
+}
