@@ -9,7 +9,6 @@ class RestrictAccessMiddleware:
         self.get_response = get_response
         self.restricted_views = [
             'seances_manager',
-            'seances_manage',
             'filieres',
             'promotions',
             'modules',

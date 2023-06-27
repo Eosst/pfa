@@ -5,10 +5,10 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header ">
-                    <h4 class="card-title">Séances du jour</h4>
-                    <p class="card-category">Liste des séances programmées pour aujourd'hui</p>
+                    <h4 class="card-title">passer une nouvelle demande</h4>
+                    <p class="card-category">remplir la formulaire suivante pour passer une demande</p>
                 </div>
-                {% if seances  %}
+                {% comment %} {% if seances  %}
                     <div class="card-body table-full-width table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -30,7 +30,7 @@
                                             <a href="#" class="btn btn-danger btn-sm mx-1">Supprimer</a>
                                         </td>
                                     </tr>
-                                {% endfor %}
+                                {% endfor %} 
 
                             </tbody>
                         </table>
@@ -39,7 +39,29 @@
                     <div class="card-body">
                         <p class="card-text">Aucune séance n'a été programmée pour aujourd'hui.</p>
                     </div>
-                {% endif %}
+                {% endif %} {% endcomment %}
+                <div class="card-body">
+                    <form action="{% url 'seances_manage' %}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                          <label for="filiereSelect" class="form-label">Filière</label>
+                          <select class="form-control" id="filiereSelect" aria-label="Select Filière">
+                            <option selected required>Choisir un document</option>
+                            <!-- Dynamic filiere options -->
+                          </select>
+                        </div>
+                                              
+                        <div class="mb-3">
+                          <label for="promoSelect" class="form-label">Promotion</label>
+                          <select class="form-control" id="promoSelect" aria-label="Select Promotion" name="promo_id">
+                            <option selected required>Choisir une promotion</option>
+                            <!-- Dynamic promotion options -->
+                          </select>
+                        </div>
+                                              
+                        <button type="submit" class="btn btn-primary">Valider</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

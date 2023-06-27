@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title> {{ title }} | ClassMate</title>
+    <title> {{ title }} | DigitalizeIT</title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" >
     <link href="{% static 'css/light-bootstrap-dashboard.css' %}" rel="stylesheet" />
@@ -16,12 +16,12 @@
 <body>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <div class="wrapper">
-        <div class="sidebar" data-color="orange" data-image="{% static 'img/sidebar-5.jpg' %}">
+        <div class="sidebar" data-color="blue" data-image="{% static 'img/sidebar-5.jpg' %}">
             <div class="sidebar-wrapper">
                 <div class="logo">
                     <a href="dashbaord" class="simple-text fw-bold">
-                        ClassMate
-                    </a>
+                      Digitalize<span style="color: rgb(255,0,0)">IT </span>
+                  </a>
                 </div>
                 <ul class="nav">
                   <li class="nav-item {% if request.path == '/dashboard/' %}active{% endif %}">
@@ -35,23 +35,23 @@
                     <li class="nav-item {% if '/absences/' in request.path %}active{% endif %}">
                       <a class="nav-link" href="{% url 'absences' %}">
                         <i class="fas fa-bell"></i>
-                        <p>Absences</p>
+                        <p>suivi des demandes</p>
                       </a>
                     </li>
                 
                     <li class="nav-item {% if '/seances/' in request.path and '/manage/' not in request.path %}active{% endif %}">
-                      <a class="nav-link" href="{% url 'seances' %}">
-                        <i class="fas fa-clock"></i>
-                        <p>Séances</p>
+                      <a class="nav-link" href="{% url 'seances_manage' %}">
+                        <i class="fas fa-plus"></i>
+                        <p> nouvelle demande</p>
                       </a>
                     </li>
                 
-                    <li class="nav-item {% if '/etudiants/' in request.path %}active{% endif %}">
+                    {% comment %} <li class="nav-item {% if '/etudiants/' in request.path %}active{% endif %}">
                       <a class="nav-link" href="{% url 'etudiants' %}">
                         <i class="fas fa-users"></i>
                         <p>Étudiants</p>
                       </a>
-                    </li>
+                    </li> {% endcomment %}
                   {% endif %}
                 
                   {% if request.user.utilisateur.Role == 'Admin' %}
@@ -65,7 +65,7 @@
                     <li class="nav-item {% if '/seances/manage/' in request.path %}active{% endif %}">
                       <a class="nav-link" href="{% url 'seances_manage' %}">
                         <i class="fas fa-cog"></i>
-                        <p>Gestion des séances</p>
+                        <p>Gestion des demandes</p>
                       </a>
                     </li>
                     <li class="nav-item {% if '/modules/' in request.path %}active{% endif %}">
